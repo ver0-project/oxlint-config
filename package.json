@@ -1,0 +1,42 @@
+{
+	"name": "@ver0/oxlint-config",
+	"version": "1.0.0",
+	"description": "Oxlint configs used in all ver0 projects",
+	"keywords": [
+		"config",
+		"oxc",
+		"oxlint",
+		"react",
+		"typescript",
+		"vitest"
+	],
+	"bugs": {
+		"url": "https://github.com/ver0-project/oxlint-config/issues"
+	},
+	"license": "MIT",
+	"author": "Anton Zinovyev <xog3@yandex.ru>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ver0-project/oxlint-config"
+	},
+	"type": "module",
+	"exports": {
+		"./*": "./configs/*"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"lint": "vp lint",
+		"lint:fix": "vp lint --fix",
+		"fmt": "vp fmt --write",
+		"test": "vp test"
+	},
+	"devDependencies": {
+		"oxlint": "^1.75.0",
+		"semantic-release": "^25.0.8",
+		"vite-plus": "^0.2.5",
+		"vitest": "^4.1.10"
+	},
+	"packageManager": "yarn@4.12.0"
+}
