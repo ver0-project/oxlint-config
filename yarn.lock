@@ -1367,6 +1367,11 @@ __metadata:
     semantic-release: "npm:^25.0.8"
     vite-plus: "npm:^0.2.5"
     vitest: "npm:^4.1.10"
+  peerDependencies:
+    oxlint: ^1.75.0
+  peerDependenciesMeta:
+    oxlint:
+      optional: true
   languageName: unknown
   linkType: soft
 
