@@ -1,4 +1,6 @@
 *
 !configs/
 !configs/**
+!utils/
+!utils/**
 *.test.js

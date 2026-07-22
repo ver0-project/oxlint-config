@@ -11,33 +11,63 @@
 
 </div>
 
-> [!WARNING]
-> Work in progress — the oxlint counterpart of
-> [`@ver0/eslint-config`](https://github.com/ver0-project/eslint-config) for the VoidZero stack (Vite+, Oxc).
-> Config modules are not published yet.
+The oxlint counterpart of [`@ver0/eslint-config`](https://github.com/ver0-project/eslint-config) for the VoidZero
+stack (Vite+, Oxc). Rule sets are ported from the ESLint configs (XO-based) with everything mapped to oxlint's native
+Rust implementations — no JS plugins, no plugin peer dependencies.
 
 ## Installation
 
 ```bash
-vp add -D oxlint @ver0/oxlint-config
+vp add -D @ver0/oxlint-config
 ```
+
+The `oxlint` package itself is optional — Vite+ (`vp lint`) ships the linter; standalone usage requires it.
 
 ## Usage
 
 Shared configs are consumed via `oxlint.config.ts` (or the `lint` block of `vite.config.ts` in Vite+ projects) — the
-JSON config format (`.oxlintrc.json`) does not resolve npm packages in `extends`.
+JSON config format (`.oxlintrc.json`) does not resolve npm packages in `extends`. Pick the modules matching the
+project:
 
 ```ts
 import {defineConfig} from 'oxlint';
-import base from '@ver0/oxlint-config/base.js';
+import javascript from '@ver0/oxlint-config/javascript.js';
+import typescript from '@ver0/oxlint-config/typescript.js';
+import node from '@ver0/oxlint-config/node.js';
+import vitest from '@ver0/oxlint-config/vitest.js';
 
 export default defineConfig({
-	extends: [base],
+	extends: [javascript, typescript, node, vitest],
 });
 ```
 
+## Configs
+
+| Module          | Applies to | Contents                                                               |
+| --------------- | ---------- | ---------------------------------------------------------------------- |
+| `javascript.js` | `*.js(x)`  | ESLint core + `unicorn`, `import`, `promise` rules                     |
+| `typescript.js` | `*.ts(x)`  | JS rule set + `typescript` rules, type-aware rules included            |
+| `react.js`      | JS + TS    | `react` and `react-hooks` rules                                        |
+| `node.js`       | JS + TS    | Node.js environment, globals and `node` rules (ESM flavor)             |
+| `browser.js`    | JS + TS    | Browser environment plus `no-restricted-globals` for confusing globals |
+| `vitest.js`     | `*.test.*` | `vitest` plugin rules for test files                                   |
+
+`typescript.js` additionally exports `typescriptUnsafe` that disables strict `no-unsafe-*` type-safety rules.
+
+### Type-aware linting
+
+`typescript.js` enables `typeAware` and includes rules that need type information. They require
+[`oxlint-tsgolint`](https://github.com/oxc-project/tsgolint):
+
+```bash
+vp add -D oxlint-tsgolint
+```
+
+Without it, disable type-aware mode in the consuming config: `options: {typeAware: false}`.
+
 ## Scope
 
-Unlike `@ver0/eslint-config`, this package covers only what oxlint lints natively — JS/TS, React, Node, browser and
-Vitest rules ship with the oxlint binary, so there are no plugin peer dependencies. Svelte template rules, JSON and
-Markdown linting stay with the ESLint config.
+This package covers only what oxlint lints natively. Svelte template rules, JSON and Markdown linting stay with
+[`@ver0/eslint-config`](https://github.com/ver0-project/eslint-config) — oxlint only lints `<script>` blocks of
+`.svelte` files. Formatting is [oxfmt](https://oxc.rs/docs/guide/usage/formatter)'s job — stylistic rules are
+deliberately absent.

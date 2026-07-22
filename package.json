@@ -38,5 +38,13 @@
 		"vite-plus": "^0.2.5",
 		"vitest": "^4.1.10"
 	},
+	"peerDependencies": {
+		"oxlint": "^1.75.0"
+	},
+	"peerDependenciesMeta": {
+		"oxlint": {
+			"optional": true
+		}
+	},
 	"packageManager": "yarn@4.12.0"
 }
