@@ -74,6 +74,14 @@ describe('typescript', () => {
 	it('exposes unsafe overrides', () => {
 		expect(typescriptUnsafe.rules['typescript/no-unsafe-assignment']).toBe('off');
 	});
+
+	it('permits async functions that return promises without await', () => {
+		// Base require-await must stay off: typescript/require-await exempts
+		// promise-returning bodies, and promise-function-async + return-await
+		// otherwise leave no compliant shape for this pattern.
+		const code = 'export async function f() {\n\treturn Promise.resolve(1);\n}\n';
+		expect(lint(config, 'f.ts', code)).not.toContain('require-await');
+	});
 });
 
 describe('react', () => {

@@ -11,6 +11,11 @@ const typescript = {
 		typeAware: true,
 	},
 	rules: {
+		// typescript/require-await (type-aware) supersedes it and exempts
+		// promise-returning bodies; with the base rule on, promise-function-async
+		// + return-await leave no compliant shape for `async fn() { return promise; }`.
+		'require-await': 'off',
+
 		'typescript/adjacent-overload-signatures': 'error',
 		'typescript/array-type': [
 			'error',

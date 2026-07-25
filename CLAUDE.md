@@ -69,6 +69,13 @@ via `extends` and asserts base categories survive the merge.
 
 - `.npmignore` uses a deny-all + allowlist pattern (`*` then `!dir/`). You must also add `!dir/**` alongside `!dir/`
   or npm silently excludes directory contents. `utils/` must stay in the allowlist — configs import it.
+- oxlint merges a consumer's top-level `overrides` before extended configs, so preset overrides win over them;
+  consumers must compose their own overrides as the last `extends` entry (documented in README Troubleshooting).
+- Rules of a plugin enabled only inside an override (vitest) are silently ignored in other overrides unless the
+  plugin is redeclared there.
+- Base `require-await` must stay off in `typescript.js`: together with `typescript/promise-function-async` and
+  `typescript/return-await` it leaves no compliant shape for `async fn() { return promise; }` — the type-aware
+  `typescript/require-await` exempts promise-returning bodies (regression-tested).
 
 ## Release
 

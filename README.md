@@ -84,15 +84,16 @@ export default defineConfig({
 
 ## 📦 Available Configs
 
-Each config is a standalone module scoped to its own file globs. Import it to enable, skip it to disable — no options,
-no per-config dependencies.
+Each config is a standalone module; oxlint lints JS and TS uniformly, so modules apply to all lintable files (only
+the vitest module scopes itself to test files). Import to enable, skip to disable — no options, no per-config
+dependencies.
 
-- **JavaScript** (`javascript.js`) — base rules for `*.js(x)` files: ESLint core plus `unicorn`, `import`, and
-  `promise` rules. Always include this one — other configs build on top of it.
+- **JavaScript** (`javascript.js`) — base rules: ESLint core plus `unicorn`, `import`, `promise` and `oxc` rules.
+  Always include this one — other configs build on top of it.
 
-- **TypeScript** (`typescript.js`) — the JS rule set plus `typescript` rules for `*.ts(x)` files. Enables type-aware
-  linting — see [Type-aware linting](#type-aware-linting). Also exports `typescriptUnsafe` to disable strict
-  `no-unsafe-*` type-safety rules:
+- **TypeScript** (`typescript.js`) — `typescript` plugin rules with type-aware linting — see
+  [Type-aware linting](#type-aware-linting). Also exports `typescriptUnsafe` to disable strict `no-unsafe-*`
+  type-safety rules:
 
   ```ts
   import typescript, {typescriptUnsafe} from '@ver0/oxlint-config/typescript.js';
@@ -189,5 +190,35 @@ export default defineConfig({
 	rules: {
 		'some-rule': 'off', // Override any rule
 	},
+});
+```
+
+**Your `overrides` losing to the presets?** oxlint merges a consumer's top-level `overrides` _before_ the extended
+configs, so preset overrides (e.g. vitest's plugin enablement for test files) win. Compose your own overrides as the
+last `extends` entry instead — and note that rules of a plugin enabled only inside an override (like `vitest/*`) are
+silently ignored in your override unless it redeclares the plugin:
+
+```ts
+// oxlint.config.ts
+import {defineConfig} from 'oxlint';
+import javascript from '@ver0/oxlint-config/javascript.js';
+import vitest from '@ver0/oxlint-config/vitest.js';
+
+export default defineConfig({
+	extends: [
+		javascript,
+		vitest,
+		{
+			overrides: [
+				{
+					files: ['**/*.test.*'],
+					plugins: ['vitest'],
+					rules: {
+						'vitest/no-disabled-tests': 'off',
+					},
+				},
+			],
+		},
+	],
 });
 ```
