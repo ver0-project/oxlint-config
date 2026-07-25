@@ -69,6 +69,9 @@ via `extends` and asserts base categories survive the merge.
 
 - `.npmignore` uses a deny-all + allowlist pattern (`*` then `!dir/`). You must also add `!dir/**` alongside `!dir/`
   or npm silently excludes directory contents. `utils/` must stay in the allowlist — configs import it.
+- Each config module ships a hand-written `.d.ts` sibling (no build step). Keep them in sync with module exports —
+  the "type declarations" test runs `tsc --noEmit` over a consumer fixture importing every module and fails on
+  missing or drifted declarations.
 - oxlint merges a consumer's top-level `overrides` before extended configs, so preset overrides win over them;
   consumers must compose their own overrides as the last `extends` entry (documented in README Troubleshooting).
 - Rules of a plugin enabled only inside an override (vitest) are silently ignored in other overrides unless the

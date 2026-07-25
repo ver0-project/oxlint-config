@@ -3,6 +3,7 @@ import {mkdtempSync, rmSync, writeFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {afterAll, describe, expect, it} from 'vitest';
 import browser from './browser.js';
 import javascript from './javascript.js';
@@ -106,6 +107,47 @@ describe('browser', () => {
 describe('vitest', () => {
 	it('lints test files', () => {
 		expect(lint(vitest, 'sample.test.js', "it.only('works', () => {});\n")).toContain('no-focused-tests');
+	});
+});
+
+describe('type declarations', () => {
+	it('modules type-check for TS consumers', () => {
+		const dir = mkdtempSync(path.join(tmpdir(), 'ver0-oxlint-config-'));
+		tempDirs.push(dir);
+
+		const configsDir = path.dirname(fileURLToPath(import.meta.url));
+		const consumer = `
+import javascript from '${configsDir}/javascript.js';
+import typescript, {typescriptUnsafe} from '${configsDir}/typescript.js';
+import react from '${configsDir}/react.js';
+import node from '${configsDir}/node.js';
+import browser from '${configsDir}/browser.js';
+import vitest from '${configsDir}/vitest.js';
+import browserGlobals from '${configsDir}/browser-globals.js';
+
+const restricted: string[] = browserGlobals;
+export default [javascript, typescript, typescriptUnsafe, react, node, browser, vitest, restricted];
+`;
+		writeFileSync(path.join(dir, 'consumer.ts'), consumer);
+		writeFileSync(
+			path.join(dir, 'tsconfig.json'),
+			JSON.stringify({
+				compilerOptions: {
+					strict: true,
+					noEmit: true,
+					module: 'esnext',
+					moduleResolution: 'bundler',
+					target: 'es2022',
+					skipLibCheck: false,
+					types: [],
+				},
+				files: ['consumer.ts'],
+			}),
+		);
+
+		const tscBin = path.join(configsDir, '..', 'node_modules', '.bin', 'tsc');
+		// throws with diagnostics on stdout when type-checking fails
+		expect(() => execFileSync(tscBin, ['-p', dir], {encoding: 'utf8'})).not.toThrow();
 	});
 });
 
