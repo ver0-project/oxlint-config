@@ -33,6 +33,7 @@
 		"test": "vp test"
 	},
 	"devDependencies": {
+		"conventional-changelog-conventionalcommits": "^10.2.1",
 		"oxlint": "^1.75.0",
 		"semantic-release": "^25.0.8",
 		"vite-plus": "^0.2.5",
