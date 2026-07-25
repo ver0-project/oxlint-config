@@ -44,10 +44,17 @@ utils/
 
 - Modules export pre-built, **JSON-serializable** config objects (`OxlintConfig`) as default exports. Keep them
   serializable — tests rely on `JSON.stringify` to feed them to the oxlint binary.
+- **Category-driven**: `correctness`, `suspicious`, `pedantic`, `perf` are enabled wholesale (rolling rule adoption
+  with oxlint updates). `style`/`restriction` categories stay off — `style` contains contradictory rules; curated
+  picks from both are enabled explicitly. Explicit rule entries carry: opinion `off`s, rules with non-default
+  options, and the style/restriction picks.
+- Rules live top-level (oxlint lints JS+TS uniformly); only `vitest.js` scopes via `overrides` (test file globs).
+  Modules that only add an environment or scoped rules must NOT carry top-level `plugins`/`categories` — in
+  `extends` merging, a later module's `categories` clobbers the base (the composition test guards this).
 - Every rule maps to oxlint's native Rust implementations. No `jsPlugins` — ESLint-plugin shims are out of scope; if a
   rule has no native oxlint equivalent, drop it.
-- Rule sets originate from `@ver0/eslint-config` (XO-based), initially generated via `@oxlint/migrate` and hand-tuned.
-  Stylistic rules are deliberately absent (oxfmt's job).
+- Rule opinions originate from `@ver0/eslint-config` (XO-based). Stylistic formatting rules are deliberately absent
+  (oxfmt's job).
 - `typescript.js` sets `options.typeAware` — consumers need `oxlint-tsgolint` or must disable it.
 - Svelte template rules, JSON and Markdown linting stay in `@ver0/eslint-config`.
 
@@ -55,7 +62,8 @@ utils/
 
 `configs/configs.test.js` — feasibility tests: each module is serialized to a temp `.oxlintrc.json` and run through
 the real oxlint binary against violating fixtures. A module that carries rule options oxlint rejects fails at config
-build, so the suite validates option compatibility for the whole rule set.
+build, so the suite validates option compatibility for the whole rule set. The composition test merges all modules
+via `extends` and asserts base categories survive the merge.
 
 ## Gotchas
 

@@ -72,8 +72,7 @@ describe('typescript', () => {
 	});
 
 	it('exposes unsafe overrides', () => {
-		const rules = typescriptUnsafe.overrides[0].rules;
-		expect(rules['typescript/no-unsafe-assignment']).toBe('off');
+		expect(typescriptUnsafe.rules['typescript/no-unsafe-assignment']).toBe('off');
 	});
 });
 
@@ -99,5 +98,41 @@ describe('browser', () => {
 describe('vitest', () => {
 	it('lints test files', () => {
 		expect(lint(vitest, 'sample.test.js', "it.only('works', () => {});\n")).toContain('no-focused-tests');
+	});
+});
+
+describe('composition', () => {
+	it('all modules merge via extends', () => {
+		const dir = mkdtempSync(path.join(tmpdir(), 'ver0-oxlint-config-'));
+		tempDirs.push(dir);
+
+		const modules = {
+			javascript,
+			typescript: {...typescript, options: {...typescript.options, typeAware: false}},
+			react,
+			node,
+			browser,
+			vitest,
+		};
+		for (const [name, config] of Object.entries(modules)) {
+			writeFileSync(path.join(dir, `${name}.json`), JSON.stringify(config));
+		}
+
+		const root = {extends: Object.keys(modules).map((name) => `./${name}.json`)};
+		writeFileSync(path.join(dir, '.oxlintrc.json'), JSON.stringify(root));
+		writeFileSync(path.join(dir, 'index.js'), 'debugger;\n');
+
+		let stdout;
+		try {
+			stdout = execFileSync(process.execPath, [oxlintBin, '-c', '.oxlintrc.json', '--format', 'json', '.'], {
+				cwd: dir,
+				encoding: 'utf8',
+			});
+		} catch (error) {
+			stdout = error.stdout;
+		}
+
+		expect(stdout).toContain('no-debugger');
+		expect(stdout).not.toContain('Failed to build');
 	});
 });

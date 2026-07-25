@@ -18,7 +18,7 @@ A collection of modular [Oxlint](https://oxc.rs/docs/guide/usage/linter) configs
 [`@ver0/eslint-config`](https://github.com/ver0-project/eslint-config) counterpart for the VoidZero stack (Vite+,
 Oxc). Import only what you need and compose via `extends`.
 
-- **JavaScript** — base rules plus `unicorn`, `import`, and `promise` plugins
+- **JavaScript** — base rules plus `unicorn`, `import`, `promise` and `oxc` plugins
 - **TypeScript** — TypeScript rules with type-aware linting
 - **React** — React and hooks rules
 - **Node.js** — Node globals and `node` plugin rules
@@ -26,6 +26,15 @@ Oxc). Import only what you need and compose via `extends`.
 - **Vitest** — test file rules
 
 Every rule is implemented natively in Rust inside the oxlint binary — configs need **no plugin dependencies** at all.
+
+### Rule philosophy
+
+Configs are **category-driven**: the `correctness`, `suspicious`, `pedantic` and `perf` categories are enabled
+wholesale, so new oxlint rules in those categories roll in automatically with linter updates. The `style` and
+`restriction` categories are deliberately not enabled — `style` contains mutually contradictory rules
+(`no-ternary` vs `prefer-ternary`) and vocabulary policing; instead, a curated set of style and restriction rules is
+enabled explicitly. Org-wide opinions are pinned as explicit `off` entries so they hold even if a consumer enables
+more categories.
 
 ## 🚀 Installation
 

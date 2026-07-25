@@ -2,16 +2,10 @@ import {GLOBS} from '../utils/globs.js';
 
 /** @type {import('oxlint').OxlintConfig} */
 const vitest = {
-	plugins: [],
-	categories: {
-		correctness: 'off',
-	},
-	env: {
-		builtin: true,
-	},
 	overrides: [
 		{
 			files: [GLOBS.TEST],
+			plugins: ['vitest'],
 			rules: {
 				'vitest/expect-expect': 'error',
 				'vitest/no-commented-out-tests': 'error',
@@ -31,7 +25,6 @@ const vitest = {
 				'vitest/valid-expect-in-promise': 'error',
 				'vitest/valid-title': 'error',
 			},
-			plugins: ['vitest'],
 		},
 	],
 };
