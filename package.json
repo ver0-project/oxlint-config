@@ -33,15 +33,15 @@
 		"test": "vp test"
 	},
 	"devDependencies": {
-		"conventional-changelog-conventionalcommits": "^10.2.1",
-		"oxlint": "^1.77.0",
+		"conventional-changelog-conventionalcommits": "^10.3.0",
+		"oxlint": "^1.78.0",
 		"semantic-release": "^25.0.9",
 		"typescript": "^7.0.2",
 		"vite-plus": "^0.2.8",
 		"vitest": "^4.1.10"
 	},
 	"peerDependencies": {
-		"oxlint": "^1.77.0"
+		"oxlint": "^1.78.0"
 	},
 	"peerDependenciesMeta": {
 		"oxlint": {
