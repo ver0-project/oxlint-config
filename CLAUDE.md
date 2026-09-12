@@ -40,45 +40,14 @@ utils/
   globs.js        # Shared glob patterns (GLOBS.JS, GLOBS.TS, GLOBS.TEST)
 ```
 
-## Key Conventions
+## Conventions
 
-- Modules export pre-built, **JSON-serializable** config objects (`OxlintConfig`) as default exports. Keep them
-  serializable — tests rely on `JSON.stringify` to feed them to the oxlint binary.
-- **Category-driven**: `correctness`, `suspicious`, `pedantic`, `perf` are enabled wholesale (rolling rule adoption
-  with oxlint updates). `style`/`restriction` categories stay off — `style` contains contradictory rules; curated
-  picks from both are enabled explicitly. Explicit rule entries carry: opinion `off`s, rules with non-default
-  options, and the style/restriction picks.
-- Rules live top-level (oxlint lints JS+TS uniformly); only `vitest.js` scopes via `overrides` (test file globs).
-  Modules that only add an environment or scoped rules must NOT carry top-level `plugins`/`categories` — in
-  `extends` merging, a later module's `categories` clobbers the base (the composition test guards this).
-- Every rule maps to oxlint's native Rust implementations. No `jsPlugins` — ESLint-plugin shims are out of scope; if a
-  rule has no native oxlint equivalent, drop it.
-- Rule opinions originate from `@ver0/eslint-config` (XO-based). Stylistic formatting rules are deliberately absent
-  (oxfmt's job).
-- `typescript.js` sets `options.typeAware` — consumers need `oxlint-tsgolint` or must disable it.
-- Svelte template rules, JSON and Markdown linting stay in `@ver0/eslint-config`.
+Rules scoped to `configs/`, `utils/`, `package.json` and `.npmignore` live in `.claude/rules/` and load when a
+matching file is read. Three invariants must hold before any file is read, because a new file is written, not read:
 
-## Testing
-
-`configs/configs.test.js` — feasibility tests: each module is serialized to a temp `.oxlintrc.json` and run through
-the real oxlint binary against violating fixtures. A module that carries rule options oxlint rejects fails at config
-build, so the suite validates option compatibility for the whole rule set. The composition test merges all modules
-via `extends` and asserts base categories survive the merge.
-
-## Gotchas
-
-- `.npmignore` uses a deny-all + allowlist pattern (`*` then `!dir/`). You must also add `!dir/**` alongside `!dir/`
-  or npm silently excludes directory contents. `utils/` must stay in the allowlist — configs import it.
-- Each config module ships a hand-written `.d.ts` sibling (no build step). Keep them in sync with module exports —
-  the "type declarations" test runs `tsc --noEmit` over a consumer fixture importing every module and fails on
-  missing or drifted declarations.
-- oxlint merges a consumer's top-level `overrides` before extended configs, so preset overrides win over them;
-  consumers must compose their own overrides as the last `extends` entry (documented in README Troubleshooting).
-- Rules of a plugin enabled only inside an override (vitest) are silently ignored in other overrides unless the
-  plugin is redeclared there.
-- Base `require-await` must stay off in `typescript.js`: together with `typescript/promise-function-async` and
-  `typescript/return-await` it leaves no compliant shape for `async fn() { return promise; }` — the type-aware
-  `typescript/require-await` exempts promise-returning bodies (regression-tested).
+- A config module is one JSON-serializable `OxlintConfig` default export with a hand-written `.d.ts` sibling.
+- A module that only adds an environment or scoped rules carries no top-level `plugins` or `categories`.
+- A new module is registered in the composition test and the type-declarations test in `configs/configs.test.js`.
 
 ## Release
 
