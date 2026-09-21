@@ -38,7 +38,7 @@
 		"semantic-release": "^25.0.9",
 		"typescript": "^7.0.2",
 		"vite-plus": "^0.3.2",
-		"vitest": "^5.0.0"
+		"vitest": "^5.0.1"
 	},
 	"peerDependencies": {
 		"oxlint": "^1.83.0"
