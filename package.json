@@ -34,14 +34,14 @@
 	},
 	"devDependencies": {
 		"conventional-changelog-conventionalcommits": "^10.4.0",
-		"oxlint": "^1.83.0",
+		"oxlint": "^1.85.0",
 		"semantic-release": "^25.0.9",
 		"typescript": "^7.0.2",
 		"vite-plus": "^0.3.3",
 		"vitest": "^5.0.1"
 	},
 	"peerDependencies": {
-		"oxlint": "^1.83.0"
+		"oxlint": "^1.85.0"
 	},
 	"peerDependenciesMeta": {
 		"oxlint": {
