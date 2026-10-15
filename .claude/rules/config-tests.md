@@ -17,3 +17,5 @@ against a violating inline fixture. Assertions match rule names in the diagnosti
 - The "type declarations" test runs `tsc --noEmit` over a consumer fixture importing every module. Register new
   modules there.
 - Fixtures are inline strings written to temp directories that `afterAll` removes. No fixture files in the repo.
+- Import test APIs from `vite-plus/test`, not `vitest`, overriding the `javascript:vitest` skill. `vitest` is not a
+  direct dependency; it resolves only through the copy `vite-plus` bundles.
