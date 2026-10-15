@@ -14,6 +14,10 @@
 delegates dependency management to it. Formatter options live in the `fmt` block of `vite.config.ts` — `vp fmt` does
 not read `.oxfmtrc.json`.
 
+After `vp migrate`, revert its Yarn `catalog:` for `vite-plus`, its `vite` resolution, and its removal of the `oxlint`
+dev dependency — Dependabot cannot update Yarn catalogs (dependabot/dependabot-core#14989), and the tests and `.d.ts`
+files import `oxlint`.
+
 No build step. The package ships plain JS.
 
 ## Project Overview

@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {afterAll, describe, expect, it} from 'vitest';
+import {afterAll, describe, expect, it} from 'vite-plus/test';
 import browser from './browser.js';
 import javascript from './javascript.js';
 import node from './node.js';
