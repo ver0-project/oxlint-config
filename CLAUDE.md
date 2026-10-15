@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Commands
 
 | Command      | Description          |
@@ -29,15 +27,16 @@ stack. Each config module is imported individually by consumers into `oxlint.con
 ## Architecture
 
 ```text
-configs/          # Oxlint config modules (one per concern)
-  javascript.js   # Core + unicorn/import/promise rules
-  typescript.js   # TS rules, type-aware; typescriptUnsafe named export
-  react.js        # react + react-hooks rules
-  node.js         # Node env/globals + node plugin rules (ESM flavor)
-  browser.js      # Browser env + confusing-globals restriction
-  vitest.js       # Test file rules
+configs/              # Oxlint config modules (one per concern)
+  javascript.js       # Core + unicorn/import/promise rules
+  typescript.js       # TS rules, type-aware; typescriptUnsafe named export
+  react.js            # react + react-hooks rules
+  node.js             # Node env/globals + node plugin rules (ESM flavor)
+  browser.js          # Browser env + confusing-globals restriction
+  browser-globals.js  # Confusing browser globals list, consumed by browser.js
+  vitest.js           # Test file rules
 utils/
-  globs.js        # Shared glob patterns (GLOBS.JS, GLOBS.TS, GLOBS.TEST)
+  globs.js            # Shared glob patterns (GLOBS.JS, GLOBS.TS, GLOBS.TEST)
 ```
 
 ## Conventions
