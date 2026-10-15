@@ -57,3 +57,6 @@ matching file is read. Three invariants must hold before any file is read, becau
 Automated via semantic-release: `release.yml` runs after the `CI` workflow succeeds on `master` (react-hookz
 practices). npm publishing uses trusted publishing (OIDC) — no `NPM_TOKEN`; GitHub operations use the `GH_TOKEN` PAT
 secret. Commit messages follow conventional commits (`fix:`, `feat:`, etc.).
+
+`conventional-changelog-conventionalcommits` stays on major 9 until `@semantic-release/release-notes-generator` renders
+with `conventional-changelog-writer` 9 — major 10 cannot render under writer 8, and `release.test.js` fails on it.
