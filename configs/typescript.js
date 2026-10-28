@@ -141,6 +141,17 @@ const typescript = {
 			},
 		],
 		'typescript/prefer-readonly': 'error',
+		// Under the defaults no compliant shape exists for a callback parameter whose
+		// type an API infers (`entries.filter((e) => ...)` over `Dirent[]`), nor for a
+		// parameter typed ReadonlySet or ReadonlyMap, whose methods count as mutation.
+		// The rule keeps its hold on parameters the author annotates.
+		'typescript/prefer-readonly-parameter-types': [
+			'error',
+			{
+				ignoreInferredTypes: true,
+				treatMethodsAsReadonly: true,
+			},
+		],
 		'typescript/prefer-reduce-type-parameter': 'error',
 		'typescript/prefer-regexp-exec': 'error',
 		'typescript/prefer-return-this-type': 'error',
